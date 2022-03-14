@@ -24,7 +24,7 @@ describe('editors integration', function () {
   // Fake project
   let project;
   beforeEach(async function () {
-    project = await Project.defaultSetup();
+    project = await setupProject();
     await project.chdir();
   });
 

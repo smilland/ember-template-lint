@@ -7,7 +7,7 @@ describe('getFilesToLint', function () {
   let project = null;
 
   beforeEach(async function () {
-    project = await Project.defaultSetup();
+    project = await setupProject();
     await project.chdir();
     await project.write({ 'application.hbs': 'almost empty', 'other.hbs': 'ZOMG' });
   });

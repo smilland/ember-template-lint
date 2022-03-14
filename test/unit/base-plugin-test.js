@@ -17,7 +17,7 @@ const ruleNames = Object.keys(rules);
 describe('base plugin', function () {
   let project, editorConfigResolver;
   beforeEach(async () => {
-    project = await Project.defaultSetup();
+    project = await setupProject();
 
     editorConfigResolver = new EditorConfigResolver(project.baseDir);
     editorConfigResolver.resolveEditorConfigFiles();

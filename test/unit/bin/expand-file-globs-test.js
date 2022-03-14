@@ -5,7 +5,7 @@ describe('expandFileGlobs', function () {
   let project = null;
 
   beforeEach(async function () {
-    project = await Project.defaultSetup();
+    project = await setupProject();
   });
 
   afterEach(function () {

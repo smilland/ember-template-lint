@@ -11,7 +11,7 @@ describe('pretty formatter', () => {
 
   let project;
   beforeEach(async function () {
-    project = await Project.defaultSetup();
+    project = await setupProject();
     await project.chdir();
   });
 

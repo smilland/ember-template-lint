@@ -1,7 +1,5 @@
-import { Project } from 'fixturify-project';
+import { BinTesterProject } from '@scalvert/bin-tester';
 import path from 'node:path';
-
-const ROOT = process.cwd();
 
 // this is the default .editorconfig file for new ember-cli apps, taken from:
 // https://github.com/ember-cli/ember-new-output/blob/stable/.editorconfig
@@ -37,7 +35,7 @@ module.exports = {
 };
 `;
 
-export default class FakeProject extends Project {
+export default class FakeProject extends BinTesterProject {
   static async defaultSetup() {
     let project = new this();
 
@@ -129,22 +127,5 @@ export default class FakeProject extends Project {
     this.write({
       '.lint-todorc.js': `module.exports = ${JSON.stringify(todoConfig, null, 2)}`,
     });
-  }
-
-  async chdir() {
-    this._dirChanged = true;
-
-    // ensure the directory structure is created initially
-    await this.write();
-
-    process.chdir(this.baseDir);
-  }
-
-  dispose() {
-    if (this._dirChanged) {
-      process.chdir(ROOT);
-    }
-
-    return super.dispose();
   }
 }
