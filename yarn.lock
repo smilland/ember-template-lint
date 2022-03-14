@@ -965,6 +965,14 @@
   dependencies:
     "@octokit/openapi-types" "^11.2.0"
 
+"@scalvert/bin-tester@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@scalvert/bin-tester/-/bin-tester-0.0.5.tgz#6a8991c7829fb2c3143895399572bc56aea5540b"
+  integrity sha512-CzhsDgtZhNe1FdSPocfsJJVhHwqQIp5lKa2j59jLg5tifGjNBMz4sInwY0sfJBS+t7nAR1h/p7ajeK0D/N2EWA==
+  dependencies:
+    execa "^5.1.1"
+    fixturify-project "^4.1.0"
+
 "@simple-dom/interface@^1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@simple-dom/interface/-/interface-1.4.0.tgz#e8feea579232017f89b0138e2726facda6fbb71f"
