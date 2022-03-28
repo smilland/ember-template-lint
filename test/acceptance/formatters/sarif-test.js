@@ -258,7 +258,7 @@ describe('SARIF formatter', () => {
         'no-bare-strings': true,
       },
     });
-    await project.writeJSON({
+    await project.writeDirJSON({
       app: {
         templates: {
           'application.hbs': '<h2>Here too!!</h2><div>Bare strings are bad...</div>',
@@ -282,7 +282,7 @@ describe('SARIF formatter', () => {
         'no-html-comments': 'warn',
       },
     });
-    await project.writeJSON({
+    await project.writeDirJSON({
       app: {
         templates: {
           'application.hbs':
@@ -307,7 +307,7 @@ describe('SARIF formatter', () => {
         'no-html-comments': 'warn',
       },
     });
-    await project.writeJSON({
+    await project.writeDirJSON({
       app: {
         templates: {
           'application.hbs':
@@ -332,7 +332,7 @@ describe('SARIF formatter', () => {
         'no-html-comments': 'warn',
       },
     });
-    await project.writeJSON({
+    await project.writeDirJSON({
       app: {
         templates: {
           'application.hbs':
@@ -358,7 +358,7 @@ describe('SARIF formatter', () => {
         'no-html-comments': 'warn',
       },
     });
-    await project.writeJSON({
+    await project.writeDirJSON({
       app: {
         templates: {
           'application.hbs':
@@ -384,7 +384,7 @@ describe('SARIF formatter', () => {
         'no-html-comments': 'warn',
       },
     });
-    await project.writeJSON({
+    await project.writeDirJSON({
       app: {
         templates: {
           'application.hbs':
@@ -431,7 +431,7 @@ describe('SARIF formatter', () => {
         'no-html-comments': true,
       },
     });
-    await project.writeJSON({
+    await project.writeDirJSON({
       app: {
         templates: {
           'application.hbs': '<div></div>',

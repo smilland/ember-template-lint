@@ -32,7 +32,7 @@ describe('todo usage', () => {
           'no-bare-strings': true,
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs': '<h2>Here too!!</h2><div>Bare strings are bad...</div>',
@@ -64,7 +64,7 @@ describe('todo usage', () => {
           'no-bare-strings': true,
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs': '<h2>Here too!!</h2><div>Bare strings are bad...</div>',
@@ -100,7 +100,7 @@ describe('todo usage', () => {
           'no-bare-strings': true,
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs': '<h2>{{@notBare}}</h2>',
@@ -122,7 +122,7 @@ describe('todo usage', () => {
           'no-html-comments': true,
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs':
@@ -144,7 +144,7 @@ describe('todo usage', () => {
           'no-html-comments': true,
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs':
@@ -159,7 +159,7 @@ describe('todo usage', () => {
       expect(todoStorageFileExists(project.baseDir)).toEqual(true);
       expect(readTodoData(project.baseDir, buildReadOptions()).size).toEqual(3);
 
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs': `
@@ -184,7 +184,7 @@ describe('todo usage', () => {
           'no-html-comments': true,
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs':
@@ -224,7 +224,7 @@ describe('todo usage', () => {
           'no-bare-strings': true,
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs': '<div>Bare strings are bad...</div>',
@@ -239,7 +239,7 @@ describe('todo usage', () => {
 
       expect(todos.size).toEqual(2);
 
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs': '<div>Bare strings are bad...</div>',
@@ -269,7 +269,7 @@ describe('todo usage', () => {
           'no-html-comments': true,
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs': '<div>Bare strings are bad...</div>',
@@ -310,7 +310,7 @@ describe('todo usage', () => {
           },
         });
 
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               'require-button-type.hbs': '<button>Klikk</button>',
@@ -322,7 +322,7 @@ describe('todo usage', () => {
         await runBin('.', '--update-todo');
 
         // mimic fixing the error manually via user interaction
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               'require-button-type.hbs': '<button type="submit">Klikk</button>',
@@ -360,7 +360,7 @@ describe('todo usage', () => {
           },
         });
 
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               'require-button-type.hbs': '<button>Klikk</button>',
@@ -372,7 +372,7 @@ describe('todo usage', () => {
         await runBin('.', '--update-todo');
 
         // mimic fixing the error manually via user interaction
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               'require-button-type.hbs': '<button type="submit">Klikk</button>',
@@ -415,7 +415,7 @@ describe('todo usage', () => {
           },
         });
 
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               'require-button-type.hbs': '<button>Klikk</button>',
@@ -427,7 +427,7 @@ describe('todo usage', () => {
         await runBin('.', '--update-todo');
 
         // mimic fixing the error manually via user interaction
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               'require-button-type.hbs': '<button type="submit">Klikk</button>',
@@ -465,7 +465,7 @@ describe('todo usage', () => {
           },
         });
 
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               'require-button-type.hbs': '<button>Klikk</button>',
@@ -477,7 +477,7 @@ describe('todo usage', () => {
         await runBin('.', '--update-todo');
 
         // mimic fixing the error manually via user interaction
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               'require-button-type.hbs': '<button type="submit">Klikk</button>',
@@ -515,7 +515,7 @@ describe('todo usage', () => {
           'no-bare-strings': true,
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs': '<div>{{@foo}}</div>',
@@ -536,7 +536,7 @@ describe('todo usage', () => {
           'no-bare-strings': true,
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs': '<div>Bare strings are bad...</div>',
@@ -559,7 +559,7 @@ describe('todo usage', () => {
           'no-bare-strings': true,
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs': '<div>{{someString}}</div>',
@@ -580,7 +580,7 @@ describe('todo usage', () => {
           'no-bare-strings': true,
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs': '<div>Bare strings are bad...</div>',
@@ -601,7 +601,7 @@ describe('todo usage', () => {
           'no-bare-strings': true,
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs': '<div>Bare strings are bad...</div>',
@@ -623,7 +623,7 @@ describe('todo usage', () => {
           'no-bare-strings': true,
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs': '<div>Bare strings are bad...</div>',
@@ -644,7 +644,7 @@ describe('todo usage', () => {
           'no-bare-strings': true,
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs': '<div>Bare strings are bad...</div>',
@@ -665,7 +665,7 @@ describe('todo usage', () => {
           'no-bare-strings': true,
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs': '<div>Bare strings are bad...</div>',
@@ -693,7 +693,7 @@ describe('todo usage', () => {
           'no-bare-strings': true,
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs': '<div>Bare strings are bad...</div>',
@@ -718,7 +718,7 @@ describe('todo usage', () => {
           'no-bare-strings': true,
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs': '<div>Bare strings are bad...</div>',
@@ -746,7 +746,7 @@ describe('todo usage', () => {
           'no-bare-strings': true,
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs': '<div>Bare strings are bad...</div>',
@@ -778,7 +778,7 @@ describe('todo usage', () => {
           'no-bare-strings': true,
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs': '<div>Bare strings are bad...</div>',
@@ -809,7 +809,7 @@ describe('todo usage', () => {
           'no-bare-strings': true,
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs': '<div>Bare strings are bad...</div>',
@@ -862,7 +862,7 @@ describe('todo usage', () => {
             },
           });
 
-          await project.writeJSON({
+          await project.writeDirJSON({
             app: {
               templates: {
                 'require-button-type.hbs': '<button>Check Expiration</button>',
@@ -902,7 +902,7 @@ describe('todo usage', () => {
               'no-bare-strings': true,
             },
           });
-          await project.writeJSON({
+          await project.writeDirJSON({
             app: {
               templates: {
                 'application.hbs': '<div>Bare strings are bad...</div>',
@@ -927,7 +927,7 @@ describe('todo usage', () => {
               'no-bare-strings': true,
             },
           });
-          await project.writeJSON({
+          await project.writeDirJSON({
             app: {
               templates: {
                 'application.hbs': '<div>Bare strings are bad...</div>',
@@ -957,7 +957,7 @@ describe('todo usage', () => {
               'no-bare-strings': true,
             },
           });
-          await project.writeJSON({
+          await project.writeDirJSON({
             app: {
               templates: {
                 'application.hbs': '<div>Bare strings are bad...</div>',
@@ -991,7 +991,7 @@ describe('todo usage', () => {
               'no-bare-strings': true,
             },
           });
-          await project.writeJSON({
+          await project.writeDirJSON({
             app: {
               templates: {
                 'application.hbs': '<div>Bare strings are bad...</div>',
@@ -1025,7 +1025,7 @@ describe('todo usage', () => {
               'no-bare-strings': true,
             },
           });
-          await project.writeJSON({
+          await project.writeDirJSON({
             app: {
               templates: {
                 'application.hbs': '<div>Bare strings are bad...</div>',
@@ -1055,7 +1055,7 @@ describe('todo usage', () => {
               'no-bare-strings': true,
             },
           });
-          await project.writeJSON({
+          await project.writeDirJSON({
             app: {
               templates: {
                 'application.hbs': '<div>Bare strings are bad...</div>',
@@ -1089,7 +1089,7 @@ describe('todo usage', () => {
               'no-bare-strings': true,
             },
           });
-          await project.writeJSON({
+          await project.writeDirJSON({
             app: {
               templates: {
                 'application.hbs': '<div>Bare strings are bad...</div>',
@@ -1123,7 +1123,7 @@ describe('todo usage', () => {
               'no-bare-strings': true,
             },
           });
-          await project.writeJSON({
+          await project.writeDirJSON({
             app: {
               templates: {
                 'application.hbs': '<div>Bare strings are bad...</div>',
@@ -1157,7 +1157,7 @@ describe('todo usage', () => {
               'no-bare-strings': true,
             },
           });
-          await project.writeJSON({
+          await project.writeDirJSON({
             app: {
               templates: {
                 'application.hbs': '<div>Bare strings are bad...</div>',
@@ -1196,7 +1196,7 @@ describe('todo usage', () => {
               'no-bare-strings': true,
             },
           });
-          await project.writeJSON({
+          await project.writeDirJSON({
             app: {
               templates: {
                 'application.hbs': '<div>Bare strings are bad...</div>',
@@ -1243,7 +1243,7 @@ describe('todo usage', () => {
               'no-bare-strings': true,
             },
           });
-          await project.writeJSON({
+          await project.writeDirJSON({
             app: {
               templates: {
                 'application.hbs': '<div>Bare strings are bad...</div>',
@@ -1281,7 +1281,7 @@ describe('todo usage', () => {
               'no-bare-strings': true,
             },
           });
-          await project.writeJSON({
+          await project.writeDirJSON({
             app: {
               templates: {
                 'application.hbs': '<div>Bare strings are bad...</div>',
@@ -1312,7 +1312,7 @@ describe('todo usage', () => {
               'no-bare-strings': true,
             },
           });
-          await project.writeJSON({
+          await project.writeDirJSON({
             app: {
               templates: {
                 'application.hbs': '<div>Bare strings are bad...</div>',
@@ -1343,7 +1343,7 @@ describe('todo usage', () => {
               'no-bare-strings': true,
             },
           });
-          await project.writeJSON({
+          await project.writeDirJSON({
             app: {
               templates: {
                 'application.hbs': '<div>Bare strings are bad...</div>',
@@ -1378,7 +1378,7 @@ describe('todo usage', () => {
               'no-bare-strings': true,
             },
           });
-          await project.writeJSON({
+          await project.writeDirJSON({
             app: {
               templates: {
                 'application.hbs': '<div>Bare strings are bad...</div>',
@@ -1409,7 +1409,7 @@ describe('todo usage', () => {
               'no-bare-strings': true,
             },
           });
-          await project.writeJSON({
+          await project.writeDirJSON({
             app: {
               templates: {
                 'application.hbs': '<div>Bare strings are bad...</div>',
@@ -1445,7 +1445,7 @@ describe('todo usage', () => {
               'no-bare-strings': true,
             },
           });
-          await project.writeJSON({
+          await project.writeDirJSON({
             app: {
               templates: {
                 'application.hbs': '<div>Bare strings are bad...</div>',
@@ -1480,7 +1480,7 @@ describe('todo usage', () => {
               'no-bare-strings': true,
             },
           });
-          await project.writeJSON({
+          await project.writeDirJSON({
             app: {
               templates: {
                 'application.hbs': '<div>Bare strings are bad...</div>',
@@ -1517,7 +1517,7 @@ describe('todo usage', () => {
                 'no-bare-strings': true,
               },
             });
-            await project.writeJSON({
+            await project.writeDirJSON({
               app: {
                 templates: {
                   'application.hbs': '<div>Bare strings are bad...</div>',

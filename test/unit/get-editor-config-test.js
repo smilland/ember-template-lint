@@ -16,7 +16,7 @@ describe('get-editor-config', function () {
   it('able to read and add info from .editorconfig file if exists', async function () {
     let filePath = project.path('app.hbs');
 
-    await project.writeJSON({
+    await project.writeDirJSON({
       'app.hbs': '',
       '.editorconfig': `
 # EditorConfig helps developers define and maintain consistent
@@ -70,7 +70,7 @@ trim_trailing_whitespace = false
   it('return empty object if no config found', async function () {
     let filePath = project.path('app.hbs');
 
-    await project.writeJSON({
+    await project.writeDirJSON({
       'app.hbs': '',
     });
 
@@ -80,7 +80,7 @@ trim_trailing_whitespace = false
   it('able to merge different editor config files', async function () {
     let filePath = project.path('app/app.hbs');
 
-    await project.writeJSON({
+    await project.writeDirJSON({
       app: {
         'app.hbs': '',
         '.editorconfig': `
@@ -108,7 +108,7 @@ indent_size = 5
   it('able to merge different config sections', async function () {
     let filePath = project.path('app.hbs');
 
-    await project.writeJSON({
+    await project.writeDirJSON({
       'app.hbs': '',
       '.editorconfig': `
 [*]
@@ -132,7 +132,7 @@ insert_final_newline = true
   });
 
   it('able to resolve relative paths', async function () {
-    await project.writeJSON({
+    await project.writeDirJSON({
       src: {
         'app.hbs': '',
       },
@@ -150,7 +150,7 @@ indent_style = space
   it('able to resolve config with custom name', async function () {
     let filePath = project.path('app.hbs');
 
-    await project.writeJSON({
+    await project.writeDirJSON({
       'app.hbs': '',
       '.newline': `
 [*]
@@ -178,7 +178,7 @@ insert_final_newline = true
   it('return default values if no hbs in editor config', async function () {
     let filePath = project.path('app.hbs');
 
-    await project.writeJSON({
+    await project.writeDirJSON({
       'app.hbs': '',
       '.editorconfig': `
 [*]
@@ -197,7 +197,7 @@ indent_size = 5
   it('return empty object if editor config not relevant', async function () {
     let filePath = project.path('app.hbs');
 
-    await project.writeJSON({
+    await project.writeDirJSON({
       'app.hbs': '',
       '.editorconfig': `
 [*.css]
@@ -212,7 +212,7 @@ indent_size = 5
   it('allow specify custom editorconfig for file', async function () {
     let filePath = project.path('items/app.hbs');
 
-    await project.writeJSON({
+    await project.writeDirJSON({
       'app.hbs': '',
       items: {
         'app.hbs': '',

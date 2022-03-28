@@ -965,10 +965,10 @@
   dependencies:
     "@octokit/openapi-types" "^11.2.0"
 
-"@scalvert/bin-tester@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@scalvert/bin-tester/-/bin-tester-0.3.0.tgz#cceda70827c18f18f25ea28e251b19c5fb5527e1"
-  integrity sha512-0xAASZ07gHmnxBK6mIA6+bayM3IraqeIrjI1QEnNZI8ITe2FV6tcMtNsyBf5bFQdFkjeYWFu2S0DZTuHeXFWhg==
+"@scalvert/bin-tester@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@scalvert/bin-tester/-/bin-tester-1.0.0.tgz#3c7f4d1b183751e059150e13e09e5a28fb937bf0"
+  integrity sha512-IrLKTf9+HNl3yLvFOzgAlzP0yaitCI2h2WXINbedYehwU+h/+TQdTcRlozeBNsxSOF4EjZPrhe7flRL9pSKlaA==
   dependencies:
     deepmerge "^4.2.2"
     execa "^5.1.1"

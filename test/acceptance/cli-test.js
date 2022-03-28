@@ -178,7 +178,7 @@ describe('ember-template-lint executable', function () {
             'no-bare-strings': true,
           },
         });
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               'application.hbs': '<h2>Here too!!</h2> <div>Bare strings are bad...</div>',
@@ -206,7 +206,7 @@ describe('ember-template-lint executable', function () {
             'no-bare-strings': true,
           },
         });
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               'application.hbs': '<h2>Here too!!</h2> <div>Bare strings are bad...</div>',
@@ -233,7 +233,7 @@ describe('ember-template-lint executable', function () {
           },
         });
 
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               'application.hbs': '<h2>Here too!!</h2> <div>Bare strings are bad...</div>',
@@ -273,7 +273,7 @@ describe('ember-template-lint executable', function () {
             'no-bare-strings': true,
           },
         });
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               'application.fizzle': '<h2>Here too!!</h2> <div>Bare strings are bad...</div>',
@@ -296,7 +296,7 @@ describe('ember-template-lint executable', function () {
             'no-bare-strings': true,
           },
         });
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               'application.hbs': '<h2>Here too!!</h2> <div>Bare strings are bad...</div>',
@@ -321,7 +321,7 @@ describe('ember-template-lint executable', function () {
           },
         });
 
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               'application.hbs': '<h2>Here too!!</h2> <div>Bare strings are bad...</div>',
@@ -390,7 +390,7 @@ describe('ember-template-lint executable', function () {
             'no-bare-strings': true,
           },
         });
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               'application.hbs': '<h2>Here too!!</h2> <div>Bare strings are bad...</div>',
@@ -422,7 +422,7 @@ describe('ember-template-lint executable', function () {
             'no-bare-strings': false,
           },
         });
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               'application.hbs':
@@ -451,7 +451,7 @@ describe('ember-template-lint executable', function () {
             'no-bare-strings': true,
           },
         });
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               'application.hbs': '<h2>Here too!!</h2> <div>Bare strings are bad...</div>',
@@ -530,7 +530,7 @@ describe('ember-template-lint executable', function () {
             'no-bare-strings': true,
           },
         });
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               'application.hbs': '<h2>Here too!!</h2> <div>Bare strings are bad...</div>',
@@ -564,7 +564,7 @@ describe('ember-template-lint executable', function () {
             'no-bare-strings': true,
           },
         });
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               'application.hbs': '<h2>Here too!!</h2> <div>Bare strings are bad...</div>',
@@ -597,7 +597,7 @@ describe('ember-template-lint executable', function () {
             'no-bare-strings': true,
           },
         });
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               'application.hbs': '<h2>Here too!!</h2> <div>Bare strings are bad...</div>',
@@ -627,7 +627,7 @@ describe('ember-template-lint executable', function () {
           'no-html-comments': true,
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs':
@@ -655,7 +655,7 @@ describe('ember-template-lint executable', function () {
           'no-html-comments': true,
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs':
@@ -683,7 +683,7 @@ describe('ember-template-lint executable', function () {
           'no-html-comments': true,
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs':
@@ -716,7 +716,7 @@ describe('ember-template-lint executable', function () {
           'no-html-comments': true,
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs':
@@ -750,7 +750,7 @@ describe('ember-template-lint executable', function () {
             'no-html-comments': true,
           },
         });
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             dist: {
               'application.hbs':
@@ -774,7 +774,7 @@ describe('ember-template-lint executable', function () {
             'no-html-comments': true,
           },
         });
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             foo: {
               'application.hbs':
@@ -807,7 +807,7 @@ describe('ember-template-lint executable', function () {
             'no-bare-strings': true,
           },
         });
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             foo: {
               'application.hbs': 'Bare strings are bad',
@@ -829,7 +829,7 @@ describe('ember-template-lint executable', function () {
             'no-html-comments': true,
           },
         });
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             dist: {
               'application.hbs':
@@ -857,7 +857,7 @@ describe('ember-template-lint executable', function () {
     describe('with --config-path param', function () {
       describe('able to await run only limited subset of rules', function () {
         it('should skip disabled rules from subset', async function () {
-          await project.writeJSON({
+          await project.writeDirJSON({
             'temp-templatelint-rc.js':
               'module.exports = { rules: { "no-shadowed-elements": false } };',
             'application.hbs': '{{#let "foo" as |div|}}<div>boo</div>{{/let}}',
@@ -870,7 +870,7 @@ describe('ember-template-lint executable', function () {
         });
 
         it('should load only one rule and print error message', async function () {
-          await project.writeJSON({
+          await project.writeDirJSON({
             'temp-templatelint-rc.js':
               'module.exports = { rules: { "no-shadowed-elements": true } };',
             'template.hbs': '{{#let "foo" as |div|}}<div>boo</div>{{/let}}',
@@ -895,7 +895,7 @@ describe('ember-template-lint executable', function () {
               'no-bare-strings': false,
             },
           });
-          await project.writeJSON({
+          await project.writeDirJSON({
             app: {
               templates: {
                 'application.hbs':
@@ -936,7 +936,7 @@ describe('ember-template-lint executable', function () {
               'no-bare-strings': false,
             },
           });
-          await project.writeJSON({
+          await project.writeDirJSON({
             app: {
               templates: {
                 'application.hbs':
@@ -967,7 +967,7 @@ describe('ember-template-lint executable', function () {
               'no-bare-strings': true,
             },
           });
-          await project.writeJSON({
+          await project.writeDirJSON({
             app: {
               templates: {
                 'application.hbs': '<h2>Here too!!</h2> <div>Bare strings are bad...</div>',
@@ -996,7 +996,7 @@ describe('ember-template-lint executable', function () {
             'no-html-comments': 'warn',
           },
         });
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               'application.hbs':
@@ -1018,7 +1018,7 @@ describe('ember-template-lint executable', function () {
             'no-html-comments': 'warn',
           },
         });
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               'application.hbs':
@@ -1048,7 +1048,7 @@ describe('ember-template-lint executable', function () {
             'no-html-comments': 'error',
           },
         });
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               'application.hbs':
@@ -1066,7 +1066,7 @@ describe('ember-template-lint executable', function () {
 
     describe('with --print-config option', function () {
       it('should error if more than one file passed to --print-config', async function () {
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               components: {
@@ -1096,7 +1096,7 @@ describe('ember-template-lint executable', function () {
             'no-html-comments': 'error',
           },
         });
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               'application.hbs':
@@ -1137,7 +1137,7 @@ describe('ember-template-lint executable', function () {
             'no-bare-strings': 'warn',
           },
         });
-        await project.writeJSON({
+        await project.writeDirJSON({
           app: {
             templates: {
               'application.hbs': '<h2>Here too!!</h2><div>Bare strings are bad...</div>',
@@ -1158,7 +1158,7 @@ describe('ember-template-lint executable', function () {
     it('should write fixed file to fs', async function () {
       let config = { rules: { 'require-button-type': true } };
       await project.setConfig(config);
-      await project.writeJSON({ 'require-button-type.hbs': '<button>Klikk</button>' });
+      await project.writeDirJSON({ 'require-button-type.hbs': '<button>Klikk</button>' });
 
       let result = await runBin('.', '--fix');
 

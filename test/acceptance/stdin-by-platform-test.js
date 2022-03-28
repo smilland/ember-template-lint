@@ -19,7 +19,7 @@ describe('ember-template-lint executable', function () {
         'no-bare-strings': true,
       },
     });
-    await project.writeJSON({
+    await project.writeDirJSON({
       'template.hbs': '<h2>Here too!!</h2> <div>Bare strings are bad...</div>',
       components: {
         'foo.hbs': '{{fooData}}',

@@ -24,7 +24,7 @@ describe('custom formatters', () => {
         'no-html-comments': true,
       },
     });
-    await project.writeJSON({
+    await project.writeDirJSON({
       app: {
         templates: {
           'application.hbs':
@@ -71,7 +71,7 @@ describe('custom formatters', () => {
         'no-html-comments': true,
       },
     });
-    await project.writeJSON({
+    await project.writeDirJSON({
       app: {
         templates: {
           'application.hbs':
@@ -117,7 +117,7 @@ describe('custom formatters', () => {
         'no-html-comments': true,
       },
     });
-    await project.writeJSON({
+    await project.writeDirJSON({
       app: {
         templates: {
           'application.hbs':

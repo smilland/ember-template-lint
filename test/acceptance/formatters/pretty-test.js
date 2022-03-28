@@ -24,7 +24,7 @@ describe('pretty formatter', () => {
         'no-bare-strings': true,
       },
     });
-    await project.writeJSON({
+    await project.writeDirJSON({
       app: {
         templates: {
           'application.hbs': '<h2>Here too!!</h2> <div>Bare strings are bad...</div>',
@@ -55,7 +55,7 @@ describe('pretty formatter', () => {
         'no-html-comments': 'warn',
       },
     });
-    await project.writeJSON({
+    await project.writeDirJSON({
       app: {
         templates: {
           'application.hbs':
@@ -85,7 +85,7 @@ describe('pretty formatter', () => {
       },
     });
 
-    await project.writeJSON({
+    await project.writeDirJSON({
       app: {
         components: {
           'click-me-button.hbs': '<button>Click me!</button>',
@@ -114,7 +114,7 @@ describe('pretty formatter', () => {
         'no-html-comments': 'warn',
       },
     });
-    await project.writeJSON({
+    await project.writeDirJSON({
       app: {
         templates: {
           'application.hbs':
@@ -144,7 +144,7 @@ describe('pretty formatter', () => {
         'no-html-comments': 'warn',
       },
     });
-    await project.writeJSON({
+    await project.writeDirJSON({
       app: {
         templates: {
           'application.hbs':
@@ -176,7 +176,7 @@ describe('pretty formatter', () => {
           'no-html-comments': 'warn',
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs':
@@ -204,7 +204,7 @@ describe('pretty formatter', () => {
           'no-html-comments': 'warn',
         },
       });
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs':

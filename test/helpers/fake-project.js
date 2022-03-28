@@ -114,7 +114,7 @@ export default class FakeProject extends BinTesterProject {
       todoConfig['ember-template-lint'].daysToDecayByRule = daysToDecayByRule;
     }
 
-    return this.writeJSON({
+    return this.writeDirJSON({
       '.lint-todorc.js': `module.exports = ${JSON.stringify(todoConfig, null, 2)}`,
     });
   }

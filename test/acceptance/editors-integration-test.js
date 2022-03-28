@@ -22,7 +22,7 @@ describe('editors integration', function () {
   describe('reading from stdin', function () {
     it('has exit code 1 and reports errors to stdout', async function () {
       await project.setConfig({ rules: { 'no-debugger': true } });
-      await project.writeJSON({ 'template.hbs': '{{debugger}}' });
+      await project.writeDirJSON({ 'template.hbs': '{{debugger}}' });
 
       let result = await runBin('--format', 'json', '--filename', 'template.hbs', {
         shell: false,
@@ -51,7 +51,7 @@ describe('editors integration', function () {
 
     it('has exit code 0 and writes fixes if --filename is provided', async function () {
       await project.setConfig({ rules: { 'require-button-type': true } });
-      await project.writeJSON({ 'template.hbs': '<button></button>' });
+      await project.writeDirJSON({ 'template.hbs': '<button></button>' });
 
       let result = await runBin('--format', 'json', '--filename', 'template.hbs', '--fix', {
         shell: false,

@@ -31,7 +31,7 @@ describe('multi formatter', () => {
         ],
       },
     });
-    project.writeJSON({
+    project.writeDirJSON({
       app: {
         templates: {
           'application.hbs': '<h2>Here too!!</h2> <div>Bare strings are bad...</div>',

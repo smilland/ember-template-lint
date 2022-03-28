@@ -27,7 +27,7 @@ describe('public api', function () {
 
   describe('Linter.prototype.loadConfig', function () {
     it('throws an error if the config file has an error on parsing', async function () {
-      await project.writeJSON({
+      await project.writeDirJSON({
         '.template-lintrc.js': "throw Error('error happening during config loading');\n",
       });
 
@@ -99,7 +99,7 @@ describe('public api', function () {
         },
       };
 
-      await project.writeJSON({
+      await project.writeDirJSON({
         'some-other-path.js': `module.exports = ${JSON.stringify(someOtherPathConfig)};`,
       });
 
@@ -124,7 +124,7 @@ describe('public api', function () {
       };
 
       await project.setConfig(expected);
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs': '',
@@ -153,7 +153,7 @@ describe('public api', function () {
         },
       };
 
-      await project.writeJSON({
+      await project.writeDirJSON({
         '.template-lintrc.js': `module.exports = ${JSON.stringify({ rules: { boo: 'baz' } })};`,
         app: {
           '.template-lintrc.js': `module.exports = ${JSON.stringify(appPathConfig)};`,
@@ -277,7 +277,7 @@ describe('public api', function () {
         },
       });
 
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs': "<input class='mb4'>",
@@ -297,7 +297,7 @@ describe('public api', function () {
     });
 
     it('returns whether the source has been fixed + an array of remaining issues with the provided template', async function () {
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs': '<div>FORBIDDEN</div>',
@@ -349,7 +349,7 @@ describe('public api', function () {
 
     it('ensures template parsing errors are only reported once (not once per-rule)', async function () {
       let templateContents = '{{#ach this.foo as |bar|}}{{/each}}';
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'other.hbs': templateContents,
@@ -373,7 +373,7 @@ describe('public api', function () {
     it('includes updated output when fixable', async function () {
       let templateContents = '<button>LOL, Click me!</button>';
 
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'other.hbs': templateContents,
@@ -397,7 +397,7 @@ describe('public api', function () {
     it('updated output includes byte order mark if input source includes it', async function () {
       let templateContents = '\uFEFF<button>LOL, Click me!</button>';
 
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'other.hbs': templateContents,
@@ -436,7 +436,7 @@ describe('public api', function () {
         ],
       });
 
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.hbs': '<h2>Here too!!</h2>\n<div>Bare strings are bad...</div>\n',
@@ -1149,7 +1149,7 @@ describe('public api', function () {
         },
       });
 
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.html': "<input class='mb4'>",
@@ -1172,7 +1172,7 @@ describe('public api', function () {
       // reset config to default value
       await project.setConfig();
 
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           'index.html': `
 {{!template-lint-disable no-forbidden-elements}}
@@ -1219,7 +1219,7 @@ describe('public api', function () {
       // reset config to default value
       await project.setConfig();
 
-      await project.writeJSON({
+      await project.writeDirJSON({
         tests: {
           'index.html': `
 {{!template-lint-disable no-forbidden-elements}}
@@ -1271,7 +1271,7 @@ describe('public api', function () {
     });
 
     it('[.html] returns whether the source has been fixed + an array of remaining issues with the provided template', async function () {
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'application.html': '<div>FORBIDDEN</div>',
@@ -1323,7 +1323,7 @@ describe('public api', function () {
 
     it('[.html] ensures template parsing errors are only reported once (not once per-rule)', async function () {
       let templateContents = '{{#ach this.foo as |bar|}}{{/each}}';
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'other.html': templateContents,
@@ -1347,7 +1347,7 @@ describe('public api', function () {
     it('[.html] includes updated output when fixable', async function () {
       let templateContents = '<button>LOL, Click me!</button>';
 
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'other.html': templateContents,
@@ -1371,7 +1371,7 @@ describe('public api', function () {
     it('[.html] updated output includes byte order mark if input source includes it', async function () {
       let templateContents = '\uFEFF<button>LOL, Click me!</button>';
 
-      await project.writeJSON({
+      await project.writeDirJSON({
         app: {
           templates: {
             'other.html': templateContents,

@@ -9,7 +9,7 @@ describe('getFilesToLint', function () {
   beforeEach(async function () {
     project = await setupProject();
     await project.chdir();
-    await project.writeJSON({ 'application.hbs': 'almost empty', 'other.hbs': 'ZOMG' });
+    await project.writeDirJSON({ 'application.hbs': 'almost empty', 'other.hbs': 'ZOMG' });
   });
 
   afterEach(function () {
@@ -66,7 +66,7 @@ describe('getFilesToLint', function () {
     });
 
     it('supports arbitrary extension when explictly passed', async function () {
-      await project.writeJSON({ 'foo.frizzle': 'whatever' });
+      await project.writeDirJSON({ 'foo.frizzle': 'whatever' });
 
       let files = await getFilesToLint(project.baseDir, ['foo.frizzle']);
 
