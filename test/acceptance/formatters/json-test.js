@@ -8,7 +8,7 @@ describe('JSON formatter', () => {
     await project.chdir();
   });
 
-  afterEach(async function () {
+  afterEach(function () {
     teardownProject();
   });
 

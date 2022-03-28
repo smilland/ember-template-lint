@@ -10,7 +10,7 @@ describe('multi formatter', () => {
     await project.chdir();
   });
 
-  afterEach(async function () {
+  afterEach(function () {
     teardownProject();
   });
 
