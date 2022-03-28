@@ -58,7 +58,7 @@ describe('public api', function () {
           baz: 'derp',
         },
       };
-      project.setConfig(expected);
+      await project.setConfig()expected);
 
       let linter = new Linter({
         console: mockConsole,
@@ -80,7 +80,7 @@ describe('public api', function () {
         },
       };
 
-      project.setConfig(expected);
+      await project.setConfig()expected);
 
       let linter = new Linter({
         console: mockConsole,
@@ -125,7 +125,7 @@ describe('public api', function () {
         },
       };
 
-      project.setConfig(expected);
+      await project.setConfig()expected);
       project.write({
         app: {
           templates: {
@@ -194,7 +194,7 @@ describe('public api', function () {
           'no-bare-strings': 'error',
         },
       };
-      project.setConfig(expected);
+      await project.setConfig()expected);
 
       let linter = new Linter({
         console: mockConsole,
@@ -228,7 +228,7 @@ describe('public api', function () {
     });
 
     it('instantiating linter is idempotent', async function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           'require-button-type': 'error',
         },
@@ -272,7 +272,7 @@ describe('public api', function () {
     let linter;
 
     beforeEach(function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           quotes: ['error', 'double'],
           'require-button-type': 'error',
@@ -424,7 +424,7 @@ describe('public api', function () {
   describe('Linter.prototype.verify', function () {
     let linter;
     beforeEach(function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           'no-bare-strings': 'error',
         },
@@ -1144,7 +1144,7 @@ describe('public api', function () {
     let linter;
 
     beforeEach(function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           quotes: ['error', 'double'],
           'require-button-type': 'error',
@@ -1172,7 +1172,7 @@ describe('public api', function () {
 
     it('[.html] does not identify errors (except for no-forbidden-elements) for ember-cli default app/index.html (3.20)', async function () {
       // reset config to default value
-      project.setConfig();
+      await project.setConfig());
 
       project.write({
         app: {
@@ -1219,7 +1219,7 @@ describe('public api', function () {
 
     it('[.html] does not identify errors (except for no-forbidden-elements) for ember-cli default tests/index.html (3.20)', async function () {
       // reset config to default value
-      project.setConfig();
+      await project.setConfig());
 
       project.write({
         tests: {

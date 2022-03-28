@@ -21,7 +21,7 @@ describe('pretty formatter', () => {
   });
 
   it('should format errors', async function () {
-    project.setConfig({
+    await project.setConfig(){
       rules: {
         'no-bare-strings': true,
       },
@@ -51,7 +51,7 @@ describe('pretty formatter', () => {
   });
 
   it('should format errors and warnings', async function () {
-    project.setConfig({
+    await project.setConfig(){
       rules: {
         'no-bare-strings': true,
         'no-html-comments': 'warn',
@@ -81,7 +81,7 @@ describe('pretty formatter', () => {
   });
 
   it('should include information about available fixes', async function () {
-    project.setConfig({
+    await project.setConfig(){
       rules: {
         'require-button-type': true,
       },
@@ -110,7 +110,7 @@ describe('pretty formatter', () => {
   });
 
   it('should output to a file using --output-file option using default filename', async () => {
-    project.setConfig({
+    await project.setConfig(){
       rules: {
         'no-bare-strings': true,
         'no-html-comments': 'warn',
@@ -140,7 +140,7 @@ describe('pretty formatter', () => {
   });
 
   it('should output to a file using --output-file option using custom filename', async () => {
-    project.setConfig({
+    await project.setConfig(){
       rules: {
         'no-bare-strings': true,
         'no-html-comments': 'warn',
@@ -172,7 +172,7 @@ describe('pretty formatter', () => {
 
   describe('with --quiet option', function () {
     it('should print properly formatted error messages, omitting any warnings', async function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           'no-bare-strings': true,
           'no-html-comments': 'warn',
@@ -201,7 +201,7 @@ describe('pretty formatter', () => {
     });
 
     it('should exit without error and any console output', async function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           'no-html-comments': 'warn',
         },

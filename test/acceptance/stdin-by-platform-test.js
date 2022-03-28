@@ -14,20 +14,20 @@ describe('ember-template-lint executable', function () {
 
   // Fake project
   let project;
-  beforeEach(async function () {
+  beforeEach(function () {
     project = await setupProject();
-    await project.setConfig({
+    await project.setConfig(){
       rules: {
         'no-bare-strings': true,
       },
     });
-    await project.write({
+    project.write({
       'template.hbs': '<h2>Here too!!</h2> <div>Bare strings are bad...</div>',
       components: {
         'foo.hbs': '{{fooData}}',
       },
     });
-    await project.chdir();
+    project.chdir();
   });
 
   afterEach(function () {

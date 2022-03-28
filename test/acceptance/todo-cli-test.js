@@ -2,8 +2,11 @@ import { jest } from '@jest/globals';
 import { todoStorageFileExists, writeTodos, readTodoData } from '@lint-todo/utils';
 import { differenceInDays, subDays } from 'date-fns';
 
-import { setupProject, teardownProject, runBin } from '../helpers/bin-tester.js';
+import Project from '../helpers/fake-project.js';
+import run from '../helpers/run.js';
 import setupEnvVar from '../helpers/setup-env-var.js';
+
+const ROOT = process.cwd();
 
 jest.setTimeout(10_000);
 
@@ -17,17 +20,18 @@ describe('todo usage', () => {
   // Fake project
   let project;
   beforeEach(async function () {
-    project = await setupProject();
+    project = await Project.defaultSetup();
     await project.chdir();
   });
 
   afterEach(function () {
-    teardownProject();
+    process.chdir(ROOT);
+    project.dispose();
   });
 
   describe('with/without --update-todo and --include-todo params', function () {
     it('errors if todo config exists in both package.json and .lint-todorc.js', async function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           'no-bare-strings': true,
         },
@@ -50,9 +54,7 @@ describe('todo usage', () => {
         error: 10,
       });
 
-      let result = await runBin({
-        args: ['.'],
-      });
+      let result = await run(['.']);
 
       expect(result.exitCode).toEqual(1);
       expect(result.stderr).toMatchInlineSnapshot(
@@ -61,7 +63,7 @@ describe('todo usage', () => {
     });
 
     it('does not create `.lint-todo` file without --update-todo param', async function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           'no-bare-strings': true,
         },
@@ -74,27 +76,21 @@ describe('todo usage', () => {
         },
       });
 
-      let result = await runBin({
-        args: ['.'],
-      });
+      let result = await run(['.']);
 
       expect(todoStorageFileExists(project.baseDir)).toEqual(false);
       expect(result.stdout).toBeTruthy();
     });
 
     it('errors if using either --todo-days-to-warn or --todo-days-to-error without --update-todo', async function () {
-      let result = await runBin({
-        args: ['.', '--todo-days-to-warn', '10'],
-      });
+      let result = await run(['.', '--todo-days-to-warn', '10']);
 
       expect(result.exitCode).toEqual(1);
       expect(result.stderr).toContain(
         'Using `--todo-days-to-warn` or `--todo-days-to-error` is only valid when the `--update-todo` option is being used.'
       );
 
-      result = await runBin({
-        args: ['.', '--todo-days-to-error', '10'],
-      });
+      result = await run(['.', '--todo-days-to-error', '10']);
 
       expect(result.exitCode).toEqual(1);
       expect(result.stderr).toContain(
@@ -103,7 +99,7 @@ describe('todo usage', () => {
     });
 
     it('generates no todos for no errors', async function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           'no-bare-strings': true,
         },
@@ -116,9 +112,7 @@ describe('todo usage', () => {
         },
       });
 
-      await runBin({
-        args: ['.', '--update-todo'],
-      });
+      await run(['.', '--update-todo']);
 
       const result = readTodoData(project.baseDir, buildReadOptions());
 
@@ -126,7 +120,7 @@ describe('todo usage', () => {
     });
 
     it('generates todos for existing errors', async function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           'no-bare-strings': true,
           'no-html-comments': true,
@@ -141,16 +135,14 @@ describe('todo usage', () => {
         },
       });
 
-      let result = await runBin({
-        args: ['.', '--update-todo'],
-      });
+      let result = await run(['.', '--update-todo']);
 
       expect(result.exitCode).toEqual(0);
       expect(todoStorageFileExists(project.baseDir)).toEqual(true);
     });
 
     it('generates todos for existing errors, and correctly reports todo severity when file is edited to trigger fuzzy match', async function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           'no-bare-strings': true,
           'no-html-comments': true,
@@ -165,9 +157,7 @@ describe('todo usage', () => {
         },
       });
 
-      let result = await runBin({
-        args: ['.', '--update-todo'],
-      });
+      let result = await run(['.', '--update-todo']);
 
       expect(result.exitCode).toEqual(0);
       expect(todoStorageFileExists(project.baseDir)).toEqual(true);
@@ -185,16 +175,14 @@ describe('todo usage', () => {
         },
       });
 
-      result = await runBin({
-        args: ['.'],
-      });
+      result = await run(['.']);
 
       expect(result.exitCode).toEqual(0);
       expect(result.stdout).toEqual('');
     });
 
     it('does not remove todos from another engine', async function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           'no-bare-strings': true,
           'no-html-comments': true,
@@ -228,16 +216,14 @@ describe('todo usage', () => {
         },
       ]);
 
-      const result = await runBin({
-        args: ['.', '--update-todo'],
-      });
+      const result = await run(['.', '--update-todo']);
 
       expect(result.exitCode).toEqual(0);
       expect(result.stdout).toMatch(/.*✔ 3 todos created, 0 todos removed/);
     });
 
     it('does not remove todos if custom config params are used', async function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           'no-bare-strings': true,
         },
@@ -251,9 +237,7 @@ describe('todo usage', () => {
         },
       });
 
-      await runBin({
-        args: ['.', '--update-todo'],
-      });
+      await run(['.', '--update-todo']);
 
       let todos = readTodoData(project.baseDir, buildReadOptions());
 
@@ -268,16 +252,14 @@ describe('todo usage', () => {
         },
       });
 
-      await runBin({
-        args: [
-          '.',
-          '--rule',
-          'no-html-comments:error',
-          '--update-todo',
-          '--no-inline-config',
-          '--no-config-path',
-        ],
-      });
+      await run([
+        '.',
+        '--rule',
+        'no-html-comments:error',
+        '--update-todo',
+        '--no-inline-config',
+        '--no-config-path',
+      ]);
 
       todos = readTodoData(project.baseDir, buildReadOptions());
 
@@ -285,7 +267,7 @@ describe('todo usage', () => {
     });
 
     it('does not remove todos if custom config params are used with subsequent invocations', async function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           'no-bare-strings': true,
           'no-html-comments': true,
@@ -300,24 +282,20 @@ describe('todo usage', () => {
         },
       });
 
-      await runBin({
-        args: ['.', '--update-todo'],
-      });
+      await run(['.', '--update-todo']);
 
       let todos = readTodoData(project.baseDir, buildReadOptions());
 
       expect(todos.size).toEqual(3);
 
-      let result = await runBin({
-        args: [
-          '.',
-          '--rule',
-          'no-html-comments:error',
-          '--update-todo',
-          '--no-inline-config',
-          '--no-config-path',
-        ],
-      });
+      let result = await run([
+        '.',
+        '--rule',
+        'no-html-comments:error',
+        '--update-todo',
+        '--no-inline-config',
+        '--no-config-path',
+      ]);
 
       todos = readTodoData(project.baseDir, buildReadOptions());
 
@@ -330,7 +308,7 @@ describe('todo usage', () => {
       setupEnvVar('GITHUB_ACTIONS', true);
 
       it('errors if a todo item is no longer valid when running without params, and cleans using --fix', async function () {
-        project.setConfig({
+        await project.setConfig(){
           rules: {
             'require-button-type': true,
           },
@@ -345,9 +323,7 @@ describe('todo usage', () => {
         });
 
         // generate todo based on existing error
-        await runBin({
-          args: ['.', '--update-todo'],
-        });
+        await run(['.', '--update-todo']);
 
         // mimic fixing the error manually via user interaction
         project.write({
@@ -359,9 +335,7 @@ describe('todo usage', () => {
         });
 
         // run normally and expect an error for not running --fix
-        let result = await runBin({
-          args: ['.'],
-        });
+        let result = await run(['.']);
 
         expect(result.exitCode).toEqual(1);
         expect(result.stdout).toMatchInlineSnapshot(`
@@ -373,14 +347,10 @@ describe('todo usage', () => {
         `);
 
         // run fix, and expect that this will delete the outstanding todo item
-        await runBin({
-          args: ['app/templates/require-button-type.hbs', '--fix'],
-        });
+        await run(['app/templates/require-button-type.hbs', '--fix']);
 
         // run normally again and expect no error
-        result = await runBin({
-          args: ['.'],
-        });
+        result = await run(['.']);
 
         expect(result.exitCode).toEqual(0);
         expect(result.stdout).toEqual('');
@@ -388,7 +358,7 @@ describe('todo usage', () => {
       });
 
       it('errors if a todo item is no longer valid when running without params, and cleans using --clean-todo', async function () {
-        project.setConfig({
+        await project.setConfig(){
           rules: {
             'require-button-type': true,
           },
@@ -403,9 +373,7 @@ describe('todo usage', () => {
         });
 
         // generate todo based on existing error
-        await runBin({
-          args: ['.', '--update-todo'],
-        });
+        await run(['.', '--update-todo']);
 
         // mimic fixing the error manually via user interaction
         project.write({
@@ -417,9 +385,7 @@ describe('todo usage', () => {
         });
 
         // run normally and expect an error for not running --fix
-        let result = await runBin({
-          args: ['.'],
-        });
+        let result = await run(['.']);
 
         expect(result.exitCode).toEqual(1);
         expect(result.stdout).toMatchInlineSnapshot(`
@@ -431,14 +397,10 @@ describe('todo usage', () => {
         `);
 
         // run fix, and expect that this will delete the outstanding todo item
-        await runBin({
-          args: ['app/templates/require-button-type.hbs', '--clean-todo'],
-        });
+        await run(['app/templates/require-button-type.hbs', '--clean-todo']);
 
         // run normally again and expect no error
-        result = await runBin({
-          args: ['.'],
-        });
+        result = await run(['.']);
 
         expect(result.exitCode).toEqual(0);
         expect(result.stdout).toEqual('');
@@ -451,7 +413,7 @@ describe('todo usage', () => {
       setupEnvVar('GITHUB_ACTIONS', null);
 
       it('errors if a todo item is no longer valid when running with --no-clean-todo, and cleans using --fix', async function () {
-        project.setConfig({
+        await project.setConfig(){
           rules: {
             'require-button-type': true,
           },
@@ -466,9 +428,7 @@ describe('todo usage', () => {
         });
 
         // generate todo based on existing error
-        await runBin({
-          args: ['.', '--update-todo'],
-        });
+        await run(['.', '--update-todo']);
 
         // mimic fixing the error manually via user interaction
         project.write({
@@ -480,9 +440,7 @@ describe('todo usage', () => {
         });
 
         // run normally with --no-clean-todo and expect an error for not running --fix
-        let result = await runBin({
-          args: ['.', '--no-clean-todo'],
-        });
+        let result = await run(['.', '--no-clean-todo']);
 
         expect(result.exitCode).toEqual(1);
         expect(result.stdout).toMatchInlineSnapshot(`
@@ -494,14 +452,10 @@ describe('todo usage', () => {
         `);
 
         // run fix, and expect that this will delete the outstanding todo item
-        await runBin({
-          args: ['app/templates/require-button-type.hbs', '--fix'],
-        });
+        await run(['app/templates/require-button-type.hbs', '--fix']);
 
         // run normally again and expect no error
-        result = await runBin({
-          args: ['.'],
-        });
+        result = await run(['.']);
 
         expect(result.exitCode).toEqual(0);
         expect(result.stdout).toEqual('');
@@ -509,7 +463,7 @@ describe('todo usage', () => {
       });
 
       it('errors if a todo item is no longer valid when running with --no-clean-todo, and cleans without --no-clean-todo', async function () {
-        project.setConfig({
+        await project.setConfig(){
           rules: {
             'require-button-type': true,
           },
@@ -524,9 +478,7 @@ describe('todo usage', () => {
         });
 
         // generate todo based on existing error
-        await runBin({
-          args: ['.', '--update-todo'],
-        });
+        await run(['.', '--update-todo']);
 
         // mimic fixing the error manually via user interaction
         project.write({
@@ -538,9 +490,7 @@ describe('todo usage', () => {
         });
 
         // run normally with --no-clean-todo and expect an error for not running --fix
-        let result = await runBin({
-          args: ['.', '--no-clean-todo'],
-        });
+        let result = await run(['.', '--no-clean-todo']);
 
         expect(result.exitCode).toEqual(1);
         expect(result.stdout).toMatchInlineSnapshot(`
@@ -552,14 +502,10 @@ describe('todo usage', () => {
         `);
 
         // run fix, and expect that this will delete the outstanding todo item
-        await runBin({
-          args: ['app/templates/require-button-type.hbs'],
-        });
+        await run(['app/templates/require-button-type.hbs']);
 
         // run normally again and expect no error
-        result = await runBin({
-          args: ['.'],
-        });
+        result = await run(['.']);
 
         expect(result.exitCode).toEqual(0);
         expect(result.stdout).toEqual('');
@@ -568,7 +514,7 @@ describe('todo usage', () => {
     });
 
     it('outputs empty summary for no todos or errors', async function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           'no-bare-strings': true,
         },
@@ -581,9 +527,7 @@ describe('todo usage', () => {
         },
       });
 
-      let result = await runBin({
-        args: ['.', '--update-todo'],
-      });
+      let result = await run(['.', '--update-todo']);
 
       expect(result.stdout).toMatchInlineSnapshot(
         `"✔ 0 todos created, 0 todos removed (warn after 30, error after 60 days)"`
@@ -591,7 +535,7 @@ describe('todo usage', () => {
     });
 
     it('outputs empty summary for existing todos', async function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           'no-bare-strings': true,
         },
@@ -605,20 +549,16 @@ describe('todo usage', () => {
       });
 
       // generate todos
-      await runBin({
-        args: ['.', '--update-todo'],
-      });
+      await run(['.', '--update-todo']);
 
       // running again should return no results
-      let result = await runBin({
-        args: ['.'],
-      });
+      let result = await run(['.']);
 
       expect(result.stdout).toEqual('');
     });
 
     it('with --update-todo but no todos, outputs todos created summary', async function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           'no-bare-strings': true,
         },
@@ -631,9 +571,7 @@ describe('todo usage', () => {
         },
       });
 
-      let result = await runBin({
-        args: ['.', '--update-todo'],
-      });
+      let result = await run(['.', '--update-todo']);
 
       expect(result.stdout).toMatchInlineSnapshot(
         `"✔ 0 todos created, 0 todos removed (warn after 30, error after 60 days)"`
@@ -641,7 +579,7 @@ describe('todo usage', () => {
     });
 
     it('with --update-todo, outputs todos created summary', async function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           'no-bare-strings': true,
         },
@@ -654,9 +592,7 @@ describe('todo usage', () => {
         },
       });
 
-      let result = await runBin({
-        args: ['.', '--update-todo'],
-      });
+      let result = await run(['.', '--update-todo']);
 
       expect(result.stdout).toMatchInlineSnapshot(
         `"✔ 1 todos created, 0 todos removed (warn after 30, error after 60 days)"`
@@ -664,7 +600,7 @@ describe('todo usage', () => {
     });
 
     it('with --update-todo, outputs todos created summary for multiple errors', async function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           'no-bare-strings': true,
         },
@@ -678,9 +614,7 @@ describe('todo usage', () => {
         },
       });
 
-      let result = await runBin({
-        args: ['.', '--update-todo'],
-      });
+      let result = await run(['.', '--update-todo']);
 
       expect(result.stdout).toMatchInlineSnapshot(
         `"✔ 2 todos created, 0 todos removed (warn after 30, error after 60 days)"`
@@ -688,7 +622,7 @@ describe('todo usage', () => {
     });
 
     it('with --update-todo, outputs todos created summary with warn info', async function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           'no-bare-strings': true,
         },
@@ -701,9 +635,7 @@ describe('todo usage', () => {
         },
       });
 
-      let result = await runBin({
-        args: ['.', '--update-todo', '--todo-days-to-warn', '10'],
-      });
+      let result = await run(['.', '--update-todo', '--todo-days-to-warn', '10']);
 
       expect(result.stdout).toMatchInlineSnapshot(
         `"✔ 1 todos created, 0 todos removed (warn after 10 days)"`
@@ -711,7 +643,7 @@ describe('todo usage', () => {
     });
 
     it('with --update-todo, outputs todos created summary with error info', async function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           'no-bare-strings': true,
         },
@@ -724,9 +656,7 @@ describe('todo usage', () => {
         },
       });
 
-      let result = await runBin({
-        args: ['.', '--update-todo', '--todo-days-to-error', '10'],
-      });
+      let result = await run(['.', '--update-todo', '--todo-days-to-error', '10']);
 
       expect(result.stdout).toMatchInlineSnapshot(
         `"✔ 1 todos created, 0 todos removed (error after 10 days)"`
@@ -734,7 +664,7 @@ describe('todo usage', () => {
     });
 
     it('with --update-todo, outputs todos created summary with warn and error info', async function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           'no-bare-strings': true,
         },
@@ -747,9 +677,14 @@ describe('todo usage', () => {
         },
       });
 
-      let result = await runBin({
-        args: ['.', '--update-todo', '--todo-days-to-warn', '5', '--todo-days-to-error', '10'],
-      });
+      let result = await run([
+        '.',
+        '--update-todo',
+        '--todo-days-to-warn',
+        '5',
+        '--todo-days-to-error',
+        '10',
+      ]);
 
       expect(result.stdout).toMatchInlineSnapshot(
         `"✔ 1 todos created, 0 todos removed (warn after 5, error after 10 days)"`
@@ -757,7 +692,7 @@ describe('todo usage', () => {
     });
 
     it('with --include-todo param and --update-todo, outputs todos in results', async function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           'no-bare-strings': true,
         },
@@ -770,9 +705,7 @@ describe('todo usage', () => {
         },
       });
 
-      let result = await runBin({
-        args: ['.', '--update-todo', '--include-todo'],
-      });
+      let result = await run(['.', '--update-todo', '--include-todo']);
 
       expect(result.stdout).toMatchInlineSnapshot(`
         "app/templates/application.hbs
@@ -784,7 +717,7 @@ describe('todo usage', () => {
     });
 
     it('with --include-todo param and existing todos, outputs todos in results', async function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           'no-bare-strings': true,
         },
@@ -798,14 +731,10 @@ describe('todo usage', () => {
       });
 
       // generate todos
-      await runBin({
-        args: ['.', '--update-todo'],
-      });
+      await run(['.', '--update-todo']);
 
       // running again with --include-todo should return todo summary
-      let result = await runBin({
-        args: ['.', '--include-todo'],
-      });
+      let result = await run(['.', '--include-todo']);
 
       expect(result.stdout).toMatchInlineSnapshot(`
         "app/templates/application.hbs
@@ -816,7 +745,7 @@ describe('todo usage', () => {
     });
 
     it('should set todo to error if errorDate has expired via env var', async function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           'no-bare-strings': true,
         },
@@ -829,19 +758,14 @@ describe('todo usage', () => {
         },
       });
 
-      await runBin({
-        args: ['.', '--update-todo'],
-        execaOptions: {
-          env: {
-            TODO_CREATED_DATE: subDays(new Date(), 10).toJSON(),
-            TODO_DAYS_TO_ERROR: 5,
-          },
+      await run(['.', '--update-todo'], {
+        env: {
+          TODO_CREATED_DATE: subDays(new Date(), 10).toJSON(),
+          TODO_DAYS_TO_ERROR: 5,
         },
       });
 
-      const result = await runBin({
-        args: ['.'],
-      });
+      const result = await run(['.']);
 
       expect(result.exitCode).toEqual(1);
       expect(result.stdout).toMatchInlineSnapshot(`
@@ -853,7 +777,7 @@ describe('todo usage', () => {
     });
 
     it('should set todo to error if errorDate has expired via option', async function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           'no-bare-strings': true,
         },
@@ -866,18 +790,13 @@ describe('todo usage', () => {
         },
       });
 
-      await runBin({
-        args: ['.', '--update-todo', '--todo-days-to-error', '5'],
-        execaOptions: {
-          env: {
-            TODO_CREATED_DATE: subDays(new Date(), 10).toJSON(),
-          },
+      await run(['.', '--update-todo', '--todo-days-to-error', '5'], {
+        env: {
+          TODO_CREATED_DATE: subDays(new Date(), 10).toJSON(),
         },
       });
 
-      const result = await runBin({
-        args: ['.'],
-      });
+      const result = await run(['.']);
 
       expect(result.exitCode).toEqual(1);
       expect(result.stdout).toMatchInlineSnapshot(`
@@ -889,7 +808,7 @@ describe('todo usage', () => {
     });
 
     it('should set todo to error if both warnDate and errorDate have expired via options', async function () {
-      project.setConfig({
+      await project.setConfig(){
         rules: {
           'no-bare-strings': true,
         },
@@ -902,18 +821,13 @@ describe('todo usage', () => {
         },
       });
 
-      await runBin({
-        args: ['.', '--update-todo', '--todo-days-to-warn', '5', '--todo-days-to-error', '10'],
-        execaOptions: {
-          env: {
-            TODO_CREATED_DATE: subDays(new Date(), 11).toJSON(),
-          },
+      await run(['.', '--update-todo', '--todo-days-to-warn', '5', '--todo-days-to-error', '10'], {
+        env: {
+          TODO_CREATED_DATE: subDays(new Date(), 11).toJSON(),
         },
       });
 
-      const result = await runBin({
-        args: ['.'],
-      });
+      const result = await run(['.']);
 
       expect(result.exitCode).toEqual(1);
       expect(result.stdout).toMatchInlineSnapshot(`
@@ -945,7 +859,7 @@ describe('todo usage', () => {
     ]) {
       describe(name, () => {
         it('removes expired todo file if a todo item has expired when running with --clean-todo', async function () {
-          project.setConfig({
+          await project.setConfig(){
             rules: {
               'require-button-type': true,
             },
@@ -964,20 +878,15 @@ describe('todo usage', () => {
           });
 
           // generate todo based on existing error
-          await runBin({
-            args: ['.', '--update-todo'],
-            execaOptions: {
-              // change the date so errorDate is before today
-              env: {
-                TODO_CREATED_DATE: subDays(new Date(), 10).toJSON(),
-              },
+          await run(['.', '--update-todo'], {
+            // change the date so errorDate is before today
+            env: {
+              TODO_CREATED_DATE: subDays(new Date(), 10).toJSON(),
             },
           });
 
           // run normally and expect the issue to be back in the error state and there to be no todo
-          let result = await runBin({
-            args: ['.', '--clean-todo'],
-          });
+          let result = await run(['.', '--clean-todo']);
 
           expect(result.exitCode).toEqual(1);
           expect(result.stdout).toMatchInlineSnapshot(`
@@ -991,7 +900,7 @@ describe('todo usage', () => {
         });
 
         it('should error if daysToDecay.error is less than daysToDecay.warn in config', async function () {
-          project.setConfig({
+          await project.setConfig(){
             rules: {
               'no-bare-strings': true,
             },
@@ -1008,9 +917,7 @@ describe('todo usage', () => {
             error: 5,
           });
 
-          let result = await runBin({
-            args: ['.', '--update-todo'],
-          });
+          let result = await run(['.', '--update-todo']);
 
           expect(result.stderr).toMatch(
             'The provided todo configuration contains invalid values. The `warn` value (10) must be less than the `error` value (5).'
@@ -1018,7 +925,7 @@ describe('todo usage', () => {
         });
 
         it('should create todos with correct warn date set via config', async function () {
-          project.setConfig({
+          await project.setConfig(){
             rules: {
               'no-bare-strings': true,
             },
@@ -1034,9 +941,7 @@ describe('todo usage', () => {
             warn: 10,
           });
 
-          let result = await runBin({
-            args: ['.', '--update-todo'],
-          });
+          let result = await run(['.', '--update-todo']);
 
           const todos = readTodoData(project.baseDir, buildReadOptions());
 
@@ -1050,7 +955,7 @@ describe('todo usage', () => {
         });
 
         it('should create todos with correct warn date set via env var (overrides config)', async function () {
-          project.setConfig({
+          await project.setConfig(){
             rules: {
               'no-bare-strings': true,
             },
@@ -1066,12 +971,9 @@ describe('todo usage', () => {
             warn: 10,
           });
 
-          let result = await runBin({
-            args: ['.', '--update-todo'],
-            execaOptions: {
-              env: {
-                TODO_DAYS_TO_WARN: '30',
-              },
+          let result = await run(['.', '--update-todo'], {
+            env: {
+              TODO_DAYS_TO_WARN: '30',
             },
           });
 
@@ -1087,7 +989,7 @@ describe('todo usage', () => {
         });
 
         it('should create todos with correct warn date set via option (overrides env var)', async function () {
-          project.setConfig({
+          await project.setConfig(){
             rules: {
               'no-bare-strings': true,
             },
@@ -1103,12 +1005,9 @@ describe('todo usage', () => {
             warn: 10,
           });
 
-          let result = await runBin({
-            args: ['.', '--update-todo', '--todo-days-to-warn', '30'],
-            execaOptions: {
-              env: {
-                TODO_DAYS_TO_WARN: 20,
-              },
+          let result = await run(['.', '--update-todo', '--todo-days-to-warn', '30'], {
+            env: {
+              TODO_DAYS_TO_WARN: 20,
             },
           });
 
@@ -1124,7 +1023,7 @@ describe('todo usage', () => {
         });
 
         it('should create todos with correct error date set via config', async function () {
-          project.setConfig({
+          await project.setConfig(){
             rules: {
               'no-bare-strings': true,
             },
@@ -1140,9 +1039,7 @@ describe('todo usage', () => {
             error: 10,
           });
 
-          let result = await runBin({
-            args: ['.', '--update-todo'],
-          });
+          let result = await run(['.', '--update-todo']);
 
           const todos = readTodoData(project.baseDir, buildReadOptions());
 
@@ -1156,7 +1053,7 @@ describe('todo usage', () => {
         });
 
         it('should create todos with correct error date set via env var (overrides config)', async function () {
-          project.setConfig({
+          await project.setConfig(){
             rules: {
               'no-bare-strings': true,
             },
@@ -1172,12 +1069,9 @@ describe('todo usage', () => {
             error: 10,
           });
 
-          let result = await runBin({
-            args: ['.', '--update-todo'],
-            execaOptions: {
-              env: {
-                TODO_DAYS_TO_ERROR: '30',
-              },
+          let result = await run(['.', '--update-todo'], {
+            env: {
+              TODO_DAYS_TO_ERROR: '30',
             },
           });
 
@@ -1193,7 +1087,7 @@ describe('todo usage', () => {
         });
 
         it('should create todos with correct error date set via option (overrides env var)', async function () {
-          project.setConfig({
+          await project.setConfig(){
             rules: {
               'no-bare-strings': true,
             },
@@ -1209,12 +1103,9 @@ describe('todo usage', () => {
             error: 10,
           });
 
-          let result = await runBin({
-            args: ['.', '--update-todo', '--todo-days-to-error', '30'],
-            execaOptions: {
-              env: {
-                TODO_DAYS_TO_ERROR: 20,
-              },
+          let result = await run(['.', '--update-todo', '--todo-days-to-error', '30'], {
+            env: {
+              TODO_DAYS_TO_ERROR: 20,
             },
           });
 
@@ -1230,7 +1121,7 @@ describe('todo usage', () => {
         });
 
         it('should create todos with correct dates set for warn and error via config', async function () {
-          project.setConfig({
+          await project.setConfig(){
             rules: {
               'no-bare-strings': true,
             },
@@ -1247,9 +1138,7 @@ describe('todo usage', () => {
             error: 10,
           });
 
-          let result = await runBin({
-            args: ['.', '--update-todo'],
-          });
+          let result = await run(['.', '--update-todo']);
 
           const todos = readTodoData(project.baseDir, buildReadOptions());
 
@@ -1266,7 +1155,7 @@ describe('todo usage', () => {
         });
 
         it('should create todos with correct dates set for warn and error via env vars (overrides config)', async function () {
-          project.setConfig({
+          await project.setConfig(){
             rules: {
               'no-bare-strings': true,
             },
@@ -1283,13 +1172,10 @@ describe('todo usage', () => {
             error: 10,
           });
 
-          let result = await runBin({
-            args: ['.', '--update-todo'],
-            execaOptions: {
-              env: {
-                TODO_DAYS_TO_WARN: 10,
-                TODO_DAYS_TO_ERROR: 20,
-              },
+          let result = await run(['.', '--update-todo'], {
+            env: {
+              TODO_DAYS_TO_WARN: 10,
+              TODO_DAYS_TO_ERROR: 20,
             },
           });
 
@@ -1308,7 +1194,7 @@ describe('todo usage', () => {
         });
 
         it('should create todos with correct dates set for warn and error via options (overrides env vars)', async function () {
-          project.setConfig({
+          await project.setConfig(){
             rules: {
               'no-bare-strings': true,
             },
@@ -1325,15 +1211,15 @@ describe('todo usage', () => {
             error: 10,
           });
 
-          let result = await runBin({
-            args: ['.', '--update-todo', '--todo-days-to-warn', '10', '--todo-days-to-error', '20'],
-            execaOptions: {
+          let result = await run(
+            ['.', '--update-todo', '--todo-days-to-warn', '10', '--todo-days-to-error', '20'],
+            {
               env: {
                 TODO_DAYS_TO_WARN: 7,
                 TODO_DAYS_TO_ERROR: 11,
               },
-            },
-          });
+            }
+          );
 
           const todos = readTodoData(project.baseDir, buildReadOptions());
 
@@ -1350,7 +1236,7 @@ describe('todo usage', () => {
         });
 
         it('should create todos with correct dates set for error while excluding warn', async function () {
-          project.setConfig({
+          await project.setConfig(){
             rules: {
               'no-bare-strings': true,
             },
@@ -1367,9 +1253,13 @@ describe('todo usage', () => {
             error: 10,
           });
 
-          let result = await runBin({
-            args: ['.', '--update-todo', '--no-todo-days-to-warn', '--todo-days-to-error', '20'],
-          });
+          let result = await run([
+            '.',
+            '--update-todo',
+            '--no-todo-days-to-warn',
+            '--todo-days-to-error',
+            '20',
+          ]);
 
           const todos = readTodoData(project.baseDir, buildReadOptions());
 
@@ -1384,7 +1274,7 @@ describe('todo usage', () => {
         });
 
         it('should set to todo if warnDate is not expired', async function () {
-          project.setConfig({
+          await project.setConfig(){
             rules: {
               'no-bare-strings': true,
             },
@@ -1401,13 +1291,9 @@ describe('todo usage', () => {
             warn: 5,
           });
 
-          let result = await runBin({
-            args: ['.', '--update-todo'],
-          });
+          let result = await run(['.', '--update-todo']);
 
-          result = await runBin({
-            args: ['.', '--include-todo'],
-          });
+          result = await run(['.', '--include-todo']);
 
           expect(result.exitCode).toEqual(0);
           expect(result.stdout).toMatchInlineSnapshot(`
@@ -1419,7 +1305,7 @@ describe('todo usage', () => {
         });
 
         it('should set to todo if errorDate is not expired', async function () {
-          project.setConfig({
+          await project.setConfig(){
             rules: {
               'no-bare-strings': true,
             },
@@ -1436,13 +1322,9 @@ describe('todo usage', () => {
             error: 5,
           });
 
-          let result = await runBin({
-            args: ['.', '--update-todo'],
-          });
+          let result = await run(['.', '--update-todo']);
 
-          result = await runBin({
-            args: ['.', '--include-todo'],
-          });
+          result = await run(['.', '--include-todo']);
 
           expect(result.exitCode).toEqual(0);
           expect(result.stdout).toMatchInlineSnapshot(`
@@ -1454,7 +1336,7 @@ describe('todo usage', () => {
         });
 
         it('should set todo to warn if warnDate has expired via config', async function () {
-          project.setConfig({
+          await project.setConfig(){
             rules: {
               'no-bare-strings': true,
             },
@@ -1471,18 +1353,13 @@ describe('todo usage', () => {
             warn: 5,
           });
 
-          await runBin({
-            args: ['.', '--update-todo'],
-            execaOptions: {
-              env: {
-                TODO_CREATED_DATE: subDays(new Date(), 10).toJSON(),
-              },
+          await run(['.', '--update-todo'], {
+            env: {
+              TODO_CREATED_DATE: subDays(new Date(), 10).toJSON(),
             },
           });
 
-          const result = await runBin({
-            args: ['.'],
-          });
+          const result = await run(['.']);
 
           expect(result.exitCode).toEqual(0);
           expect(result.stdout).toMatchInlineSnapshot(`
@@ -1494,7 +1371,7 @@ describe('todo usage', () => {
         });
 
         it('should set todo to warn if warnDate has expired via option', async function () {
-          project.setConfig({
+          await project.setConfig(){
             rules: {
               'no-bare-strings': true,
             },
@@ -1507,18 +1384,13 @@ describe('todo usage', () => {
             },
           });
 
-          await runBin({
-            args: ['.', '--update-todo', '--todo-days-to-warn', '5'],
-            execaOptions: {
-              env: {
-                TODO_CREATED_DATE: subDays(new Date(), 10).toJSON(),
-              },
+          await run(['.', '--update-todo', '--todo-days-to-warn', '5'], {
+            env: {
+              TODO_CREATED_DATE: subDays(new Date(), 10).toJSON(),
             },
           });
 
-          const result = await runBin({
-            args: ['.'],
-          });
+          const result = await run(['.']);
 
           expect(result.exitCode).toEqual(0);
           expect(result.stdout).toMatchInlineSnapshot(`
@@ -1530,7 +1402,7 @@ describe('todo usage', () => {
         });
 
         it('should set todo to warn if warnDate has expired but errorDate has not', async function () {
-          project.setConfig({
+          await project.setConfig(){
             rules: {
               'no-bare-strings': true,
             },
@@ -1548,18 +1420,13 @@ describe('todo usage', () => {
             error: 10,
           });
 
-          await runBin({
-            args: ['.', '--update-todo'],
-            execaOptions: {
-              env: {
-                TODO_CREATED_DATE: subDays(new Date(), 7).toJSON(),
-              },
+          await run(['.', '--update-todo'], {
+            env: {
+              TODO_CREATED_DATE: subDays(new Date(), 7).toJSON(),
             },
           });
 
-          const result = await runBin({
-            args: ['.'],
-          });
+          const result = await run(['.']);
 
           expect(result.exitCode).toEqual(0);
           expect(result.stdout).toMatchInlineSnapshot(`
@@ -1571,7 +1438,7 @@ describe('todo usage', () => {
         });
 
         it('should set todo to error if errorDate has expired via config', async function () {
-          project.setConfig({
+          await project.setConfig(){
             rules: {
               'no-bare-strings': true,
             },
@@ -1588,18 +1455,13 @@ describe('todo usage', () => {
             error: 5,
           });
 
-          await runBin({
-            args: ['.', '--update-todo'],
-            execaOptions: {
-              env: {
-                TODO_CREATED_DATE: subDays(new Date(), 10).toJSON(),
-              },
+          await run(['.', '--update-todo'], {
+            env: {
+              TODO_CREATED_DATE: subDays(new Date(), 10).toJSON(),
             },
           });
 
-          const result = await runBin({
-            args: ['.'],
-          });
+          const result = await run(['.']);
 
           expect(result.exitCode).toEqual(1);
           expect(result.stdout).toMatchInlineSnapshot(`
@@ -1611,7 +1473,7 @@ describe('todo usage', () => {
         });
 
         it('should set todo to error if both warnDate and errorDate have expired via config', async function () {
-          project.setConfig({
+          await project.setConfig(){
             rules: {
               'no-bare-strings': true,
             },
@@ -1629,18 +1491,13 @@ describe('todo usage', () => {
             error: 10,
           });
 
-          await runBin({
-            args: ['.', '--update-todo'],
-            execaOptions: {
-              env: {
-                TODO_CREATED_DATE: subDays(new Date(), 11).toJSON(),
-              },
+          await run(['.', '--update-todo'], {
+            env: {
+              TODO_CREATED_DATE: subDays(new Date(), 11).toJSON(),
             },
           });
 
-          const result = await runBin({
-            args: ['.'],
-          });
+          const result = await run(['.']);
 
           expect(result.exitCode).toEqual(1);
           expect(result.stdout).toMatchInlineSnapshot(`
@@ -1653,7 +1510,7 @@ describe('todo usage', () => {
 
         if (!isLegacy) {
           it('should set todos to correct dates for specific rules', async () => {
-            project.setConfig({
+            await project.setConfig(){
               rules: {
                 'no-bare-strings': true,
               },
@@ -1679,9 +1536,7 @@ describe('todo usage', () => {
               }
             );
 
-            let result = await runBin({
-              args: ['.', '--update-todo'],
-            });
+            let result = await run(['.', '--update-todo']);
 
             const todos = readTodoData(project.baseDir, buildReadOptions());
 
