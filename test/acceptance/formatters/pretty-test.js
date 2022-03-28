@@ -2,9 +2,8 @@ import chalk from 'chalk';
 
 import PrettyFormatter from '../../../lib/formatters/pretty.js';
 import { TODO_SEVERITY } from '../../../lib/helpers/severity.js';
-import { Project, getOutputFileContents, run, setupEnvVar } from '../../helpers/index.js';
-
-const ROOT = process.cwd();
+import { setupProject, teardownProject, runBin } from '../../helpers/bin-tester.js';
+import { getOutputFileContents, setupEnvVar } from '../../helpers/index.js';
 
 describe('pretty formatter', () => {
   setupEnvVar('FORCE_COLOR', '0');
@@ -16,8 +15,7 @@ describe('pretty formatter', () => {
   });
 
   afterEach(async function () {
-    await process.chdir(ROOT);
-    project.dispose();
+    teardownProject();
   });
 
   it('should format errors', async function () {
@@ -26,7 +24,7 @@ describe('pretty formatter', () => {
         'no-bare-strings': true,
       },
     });
-    project.write({
+    await project.writeJSON({
       app: {
         templates: {
           'application.hbs': '<h2>Here too!!</h2> <div>Bare strings are bad...</div>',
@@ -37,7 +35,7 @@ describe('pretty formatter', () => {
       },
     });
 
-    let result = await run(['.']);
+    let result = await runBin('.');
 
     expect(result.exitCode).toEqual(1);
     expect(result.stdout.split('\n')).toEqual([
@@ -57,7 +55,7 @@ describe('pretty formatter', () => {
         'no-html-comments': 'warn',
       },
     });
-    project.write({
+    await project.writeJSON({
       app: {
         templates: {
           'application.hbs':
@@ -66,7 +64,7 @@ describe('pretty formatter', () => {
       },
     });
 
-    let result = await run(['.']);
+    let result = await runBin('.');
 
     expect(result.exitCode).toEqual(1);
     expect(result.stdout.split('\n')).toEqual([
@@ -87,7 +85,7 @@ describe('pretty formatter', () => {
       },
     });
 
-    project.write({
+    await project.writeJSON({
       app: {
         components: {
           'click-me-button.hbs': '<button>Click me!</button>',
@@ -95,7 +93,7 @@ describe('pretty formatter', () => {
       },
     });
 
-    let result = await run(['.']);
+    let result = await runBin('.');
 
     expect(result.exitCode).toEqual(1);
 
@@ -116,7 +114,7 @@ describe('pretty formatter', () => {
         'no-html-comments': 'warn',
       },
     });
-    project.write({
+    await project.writeJSON({
       app: {
         templates: {
           'application.hbs':
@@ -125,7 +123,7 @@ describe('pretty formatter', () => {
       },
     });
 
-    let result = await run(['.', '--output-file']);
+    let result = await runBin('.', '--output-file');
 
     expect(result.exitCode).toEqual(1);
     expect(getOutputFileContents(result.stdout)).toMatchInlineSnapshot(`
@@ -146,7 +144,7 @@ describe('pretty formatter', () => {
         'no-html-comments': 'warn',
       },
     });
-    project.write({
+    await project.writeJSON({
       app: {
         templates: {
           'application.hbs':
@@ -155,7 +153,7 @@ describe('pretty formatter', () => {
       },
     });
 
-    let result = await run(['.', '--output-file', 'pretty-output.txt']);
+    let result = await runBin('.', '--output-file', 'pretty-output.txt');
 
     expect(result.exitCode).toEqual(1);
     expect(result.stdout).toMatch(/.*pretty-output\.txt/);
@@ -178,7 +176,7 @@ describe('pretty formatter', () => {
           'no-html-comments': 'warn',
         },
       });
-      project.write({
+      await project.writeJSON({
         app: {
           templates: {
             'application.hbs':
@@ -187,7 +185,7 @@ describe('pretty formatter', () => {
         },
       });
 
-      let result = await run(['.', '--quiet']);
+      let result = await runBin('.', '--quiet');
 
       expect(result.exitCode).toEqual(1);
       expect(result.stdout.split('\n')).toEqual([
@@ -206,7 +204,7 @@ describe('pretty formatter', () => {
           'no-html-comments': 'warn',
         },
       });
-      project.write({
+      await project.writeJSON({
         app: {
           templates: {
             'application.hbs':
@@ -214,7 +212,7 @@ describe('pretty formatter', () => {
           },
         },
       });
-      let result = await run(['.', '--quiet']);
+      let result = await runBin('.', '--quiet');
 
       expect(result.exitCode).toEqual(0);
       expect(result.stdout).toBeFalsy();

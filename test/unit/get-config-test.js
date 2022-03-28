@@ -708,7 +708,8 @@ describe('determineRuleConfig', function () {
 
 describe('resolveProjectConfig', function () {
   it('should return an empty object when options.configPath is set explicitly false', async function () {
-    let project = await setupProject();
+    let project = new Project();
+    await project.write();
 
     try {
       const config = await resolveProjectConfig(project.baseDir, { configPath: false });
@@ -720,8 +721,10 @@ describe('resolveProjectConfig', function () {
   });
 
   it('should search for config relative to the specified working directory', async function () {
-    let project1 = await setupProject();
-    let project2 = await setupProject();
+    let project1 = new Project();
+    await project1.write();
+    let project2 = new Project();
+    await project2.write();
 
     await project1.chdir();
 
@@ -746,7 +749,8 @@ describe('getProjectConfig', function () {
   let project = null;
 
   beforeEach(async function () {
-    project = await setupProject();
+    project = new Project();
+    await project.write();
   });
 
   afterEach(function () {

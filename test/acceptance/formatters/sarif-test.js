@@ -3,7 +3,8 @@ import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import SarifFormatter from '../../../lib/formatters/sarif.js';
-import { Project, getOutputFileContents, run } from '../../helpers/index.js';
+import { setupProject, teardownProject, runBin } from '../../helpers/bin-tester.js';
+import { getOutputFileContents } from '../../helpers/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -222,7 +223,6 @@ const SARIF_LOG_MATCHER_WITH_WARNING = {
   ],
 };
 
-const ROOT = process.cwd();
 const DEFAULT_OPTIONS = {
   console: undefined,
   includeTodo: false,
@@ -249,8 +249,7 @@ describe('SARIF formatter', () => {
   });
 
   afterEach(async function () {
-    await process.chdir(ROOT);
-    project.dispose();
+    teardownProject();
   });
 
   it('should format errors', async function () {
@@ -259,7 +258,7 @@ describe('SARIF formatter', () => {
         'no-bare-strings': true,
       },
     });
-    project.write({
+    await project.writeJSON({
       app: {
         templates: {
           'application.hbs': '<h2>Here too!!</h2><div>Bare strings are bad...</div>',
@@ -267,7 +266,7 @@ describe('SARIF formatter', () => {
       },
     });
 
-    let result = await run(['.', '--format', 'sarif']);
+    let result = await runBin('.', '--format', 'sarif');
     let sarifLog = JSON.parse(result.stdout);
 
     expect(result.exitCode).toEqual(1);
@@ -283,7 +282,7 @@ describe('SARIF formatter', () => {
         'no-html-comments': 'warn',
       },
     });
-    project.write({
+    await project.writeJSON({
       app: {
         templates: {
           'application.hbs':
@@ -292,7 +291,7 @@ describe('SARIF formatter', () => {
       },
     });
 
-    let result = await run(['.', '--format', 'sarif']);
+    let result = await runBin('.', '--format', 'sarif');
     let sarifLog = JSON.parse(result.stdout);
 
     expect(result.exitCode).toEqual(1);
@@ -308,7 +307,7 @@ describe('SARIF formatter', () => {
         'no-html-comments': 'warn',
       },
     });
-    project.write({
+    await project.writeJSON({
       app: {
         templates: {
           'application.hbs':
@@ -317,7 +316,7 @@ describe('SARIF formatter', () => {
       },
     });
 
-    let result = await run(['.', '--format', 'sarif', '--output-file']);
+    let result = await runBin('.', '--format', 'sarif', '--output-file');
 
     expect(result.exitCode).toEqual(1);
     expect(JSON.parse(getOutputFileContents(result.stdout))).toEqual(
@@ -333,7 +332,7 @@ describe('SARIF formatter', () => {
         'no-html-comments': 'warn',
       },
     });
-    project.write({
+    await project.writeJSON({
       app: {
         templates: {
           'application.hbs':
@@ -342,7 +341,7 @@ describe('SARIF formatter', () => {
       },
     });
 
-    let result = await run(['.', '--format', 'sarif', '--output-file', 'sarif-output.sarif']);
+    let result = await runBin('.', '--format', 'sarif', '--output-file', 'sarif-output.sarif');
 
     expect(result.exitCode).toEqual(1);
     expect(result.stdout).toMatch(/.*sarif-output\.sarif/);
@@ -359,7 +358,7 @@ describe('SARIF formatter', () => {
         'no-html-comments': 'warn',
       },
     });
-    project.write({
+    await project.writeJSON({
       app: {
         templates: {
           'application.hbs':
@@ -368,7 +367,7 @@ describe('SARIF formatter', () => {
       },
     });
 
-    let result = await run(['.', '--format', 'sarif', '--output-file', './sarif-output.sarif']);
+    let result = await runBin('.', '--format', 'sarif', '--output-file', './sarif-output.sarif');
 
     expect(result.exitCode).toEqual(1);
     expect(result.stdout).toMatch(/.*sarif-output\.sarif/);
@@ -385,7 +384,7 @@ describe('SARIF formatter', () => {
         'no-html-comments': 'warn',
       },
     });
-    project.write({
+    await project.writeJSON({
       app: {
         templates: {
           'application.hbs':
@@ -395,7 +394,7 @@ describe('SARIF formatter', () => {
     });
 
     let outputFilePath = path.join(project.baseDir, 'subdir', 'my-custom-file.sarif');
-    let result = await run(['.', '--format', 'sarif', '--output-file', outputFilePath]);
+    let result = await runBin('.', '--format', 'sarif', '--output-file', outputFilePath);
 
     expect(result.exitCode).toEqual(1);
     expect(JSON.parse(getOutputFileContents(result.stdout))).toEqual(
@@ -432,7 +431,7 @@ describe('SARIF formatter', () => {
         'no-html-comments': true,
       },
     });
-    project.write({
+    await project.writeJSON({
       app: {
         templates: {
           'application.hbs': '<div></div>',
@@ -440,7 +439,7 @@ describe('SARIF formatter', () => {
       },
     });
 
-    let result = await run(['.', '--format', 'sarif', '--output-file', 'my-results.sarif'], {
+    let result = await runBin('.', '--format', 'sarif', '--output-file', 'my-results.sarif', {
       env: {
         IS_TTY: '1',
       },
