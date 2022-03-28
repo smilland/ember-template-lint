@@ -857,7 +857,7 @@ describe('ember-template-lint executable', function () {
     describe('with --config-path param', function () {
       describe('able to await run only limited subset of rules', function () {
         it('should skip disabled rules from subset', async function () {
-          project.write({
+          project.writeJSON({
             'temp-templatelint-rc.js':
               'module.exports = { rules: { "no-shadowed-elements": false } };',
             'application.hbs': '{{#let "foo" as |div|}}<div>boo</div>{{/let}}',
@@ -870,7 +870,7 @@ describe('ember-template-lint executable', function () {
         });
 
         it('should load only one rule and print error message', async function () {
-          project.write({
+          project.writeJSON({
             'temp-templatelint-rc.js':
               'module.exports = { rules: { "no-shadowed-elements": true } };',
             'template.hbs': '{{#let "foo" as |div|}}<div>boo</div>{{/let}}',

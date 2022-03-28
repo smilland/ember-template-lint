@@ -112,7 +112,7 @@ describe('get-config', function () {
     // clone to ensure we are not mutating
     let expected = JSON.parse(JSON.stringify(config));
 
-    await project.setConfig()expected);
+    await project.setConfig(expected);
     project.chdir();
 
     let actual = await getProjectConfig(project.baseDir, {});
@@ -274,7 +274,7 @@ describe('get-config', function () {
   it('resolves plugins by string', async function () {
     let console = buildFakeConsole();
 
-    await project.setConfig(){
+    await project.setConfig({
       extends: ['my-awesome-thing:stylistic'],
       plugins: ['my-awesome-thing'],
     });
@@ -308,7 +308,7 @@ describe('get-config', function () {
   it('resolves plugins by string when using specified config (not resolved project config)', async function () {
     let console = buildFakeConsole();
 
-    await project.setConfig());
+    await project.setConfig();
 
     project.addDevDependency('my-awesome-thing', '0.0.0', (dep) => {
       dep.files['index.js'] = stripIndent`
@@ -361,7 +361,7 @@ describe('get-config', function () {
   });
 
   it('throws when non-inline plugin is missing name', async function () {
-    await project.setConfig());
+    await project.setConfig();
 
     project.addDevDependency('my-awesome-thing', '0.0.0', (dep) => {
       dep.files['index.js'] = 'module.exports = {};';
@@ -384,7 +384,7 @@ describe('get-config', function () {
   });
 
   it('throws when non-inline plugin is wrong type', async function () {
-    await project.setConfig());
+    await project.setConfig();
 
     project.addDevDependency('my-awesome-thing', '0.0.0', (dep) => {
       dep.files['index.js'] = 'module.exports = 123;';

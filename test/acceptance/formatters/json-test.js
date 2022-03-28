@@ -15,7 +15,7 @@ describe('JSON formatter', () => {
   });
 
   it('should format errors', async function () {
-    await project.setConfig(){
+    await project.setConfig({
       rules: {
         'no-bare-strings': true,
       },
@@ -66,7 +66,7 @@ describe('JSON formatter', () => {
   });
 
   it('should format errors and warnings', async function () {
-    await project.setConfig(){
+    await project.setConfig({
       rules: {
         'no-bare-strings': true,
         'no-html-comments': 'warn',
@@ -130,7 +130,7 @@ describe('JSON formatter', () => {
   });
 
   it('should include information about available fixes', async function () {
-    await project.setConfig(){
+    await project.setConfig({
       rules: {
         'require-button-type': true,
       },
@@ -169,7 +169,7 @@ describe('JSON formatter', () => {
   });
 
   it('should output to a file using --output-file option using default filename', async () => {
-    await project.setConfig(){
+    await project.setConfig({
       rules: {
         'no-bare-strings': true,
         'no-html-comments': 'warn',
@@ -233,7 +233,7 @@ describe('JSON formatter', () => {
   });
 
   it('should output to a file using --output-file option using custom filename', async () => {
-    await project.setConfig(){
+    await project.setConfig({
       rules: {
         'no-bare-strings': true,
         'no-html-comments': 'warn',
@@ -299,7 +299,7 @@ describe('JSON formatter', () => {
 
   describe('with --quiet option', function () {
     it('should print valid JSON string with errors, omitting warnings', async function () {
-      await project.setConfig(){
+      await project.setConfig({
         rules: {
           'no-bare-strings': true,
           'no-html-comments': true,
@@ -363,7 +363,7 @@ describe('JSON formatter', () => {
     });
 
     it('should exit without error and empty errors array', async function () {
-      await project.setConfig(){
+      await project.setConfig({
         rules: {
           'no-html-comments': 'warn',
         },

@@ -17,7 +17,7 @@ describe('multi formatter', () => {
   });
 
   it('should format errors', async function () {
-    await project.setConfig(){
+    await project.setConfig({
       rules: {
         'no-bare-strings': true,
       },

@@ -254,7 +254,7 @@ describe('SARIF formatter', () => {
   });
 
   it('should format errors', async function () {
-    await project.setConfig(){
+    await project.setConfig({
       rules: {
         'no-bare-strings': true,
       },
@@ -277,7 +277,7 @@ describe('SARIF formatter', () => {
   });
 
   it('should format errors and warnings', async function () {
-    await project.setConfig(){
+    await project.setConfig({
       rules: {
         'no-bare-strings': true,
         'no-html-comments': 'warn',
@@ -302,7 +302,7 @@ describe('SARIF formatter', () => {
   });
 
   it('should output to a file using --output-file option using default filename', async () => {
-    await project.setConfig(){
+    await project.setConfig({
       rules: {
         'no-bare-strings': true,
         'no-html-comments': 'warn',
@@ -327,7 +327,7 @@ describe('SARIF formatter', () => {
   });
 
   it('should output to a file using --output-file option using custom filename', async () => {
-    await project.setConfig(){
+    await project.setConfig({
       rules: {
         'no-bare-strings': true,
         'no-html-comments': 'warn',
@@ -353,7 +353,7 @@ describe('SARIF formatter', () => {
   });
 
   it('should output to a file using --output-file option using custom filename using relative path', async () => {
-    await project.setConfig(){
+    await project.setConfig({
       rules: {
         'no-bare-strings': true,
         'no-html-comments': 'warn',
@@ -379,7 +379,7 @@ describe('SARIF formatter', () => {
   });
 
   it('should output to a file using --output-file option using custom filename using absolute path', async () => {
-    await project.setConfig(){
+    await project.setConfig({
       rules: {
         'no-bare-strings': true,
         'no-html-comments': 'warn',
@@ -426,7 +426,7 @@ describe('SARIF formatter', () => {
   });
 
   it('should always emit a SARIF file even when there are no errors/warnings', async function () {
-    await project.setConfig(){
+    await project.setConfig({
       rules: {
         'no-bare-strings': true,
         'no-html-comments': true,

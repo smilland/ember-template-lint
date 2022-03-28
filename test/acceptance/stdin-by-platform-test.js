@@ -16,7 +16,7 @@ describe('ember-template-lint executable', function () {
   let project;
   beforeEach(function () {
     project = await setupProject();
-    await project.setConfig(){
+    await project.setConfig({
       rules: {
         'no-bare-strings': true,
       },

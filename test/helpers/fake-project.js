@@ -49,10 +49,6 @@ export default class FakeProject extends BinTesterProject {
     return project;
   }
 
-  constructor(name = 'fake-project', ...args) {
-    super(name, ...args);
-  }
-
   setConfig(config) {
     let configFileContents =
       config === undefined
@@ -77,12 +73,6 @@ export default class FakeProject extends BinTesterProject {
 
   path(subPath) {
     return subPath ? path.join(this.baseDir, subPath) : this.baseDir;
-  }
-
-  // behave like a TempDir from broccoli-test-helper
-  write(dirJSON) {
-    this.files = { ...this.files, ...dirJSON };
-    return super.write();
   }
 
   setShorthandPackageJsonTodoConfig(daysToDecay) {
@@ -124,7 +114,7 @@ export default class FakeProject extends BinTesterProject {
       todoConfig['ember-template-lint'].daysToDecayByRule = daysToDecayByRule;
     }
 
-    this.write({
+    return this.writeJSON({
       '.lint-todorc.js': `module.exports = ${JSON.stringify(todoConfig, null, 2)}`,
     });
   }

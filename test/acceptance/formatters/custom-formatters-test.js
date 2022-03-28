@@ -19,7 +19,7 @@ describe('custom formatters', () => {
   });
 
   it('should be able to load relative formatter', async function () {
-    await project.setConfig(){
+    await project.setConfig({
       rules: {
         'no-bare-strings': true,
         'no-html-comments': true,
@@ -66,7 +66,7 @@ describe('custom formatters', () => {
   });
 
   it('should be able to load formatter from node_modules', async function () {
-    await project.setConfig(){
+    await project.setConfig({
       rules: {
         'no-bare-strings': true,
         'no-html-comments': true,
@@ -112,7 +112,7 @@ describe('custom formatters', () => {
   });
 
   it('should be able use legacy formatters using .print()', async function () {
-    await project.setConfig(){
+    await project.setConfig({
       rules: {
         'no-bare-strings': true,
         'no-html-comments': true,
