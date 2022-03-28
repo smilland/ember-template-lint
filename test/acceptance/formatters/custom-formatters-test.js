@@ -2,8 +2,7 @@ import fs from 'node:fs';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import Project from '../../helpers/fake-project.js';
-import run from '../../helpers/run.js';
+import { setupProject, teardownProject, runBin } from '../../helpers/bin-tester.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -15,7 +14,7 @@ describe('custom formatters', () => {
   });
 
   afterEach(function () {
-    project.dispose();
+    teardownProject();
   });
 
   it('should be able to load relative formatter', async function () {
@@ -25,7 +24,7 @@ describe('custom formatters', () => {
         'no-html-comments': true,
       },
     });
-    project.write({
+    await project.writeJSON({
       app: {
         templates: {
           'application.hbs':
@@ -55,7 +54,7 @@ describe('custom formatters', () => {
             `,
     });
 
-    let result = await run(['.', '--format', './custom-formatter.js']);
+    let result = await runBin('.', '--format', './custom-formatter.js');
 
     expect(result.stdout).toMatchInlineSnapshot(`
       "errors: 3
@@ -72,7 +71,7 @@ describe('custom formatters', () => {
         'no-html-comments': true,
       },
     });
-    project.write({
+    await project.writeJSON({
       app: {
         templates: {
           'application.hbs':
@@ -100,7 +99,7 @@ describe('custom formatters', () => {
       path.join(formatterDirPath, 'package.json')
     );
 
-    let result = await run(['.', '--format', 'ember-template-lint-formatter-test']);
+    let result = await runBin('.', '--format', 'ember-template-lint-formatter-test');
 
     expect(result.stdout).toMatchInlineSnapshot(`
       "Custom Formatter Header
@@ -118,7 +117,7 @@ describe('custom formatters', () => {
         'no-html-comments': true,
       },
     });
-    project.write({
+    await project.writeJSON({
       app: {
         templates: {
           'application.hbs':
@@ -143,7 +142,7 @@ describe('custom formatters', () => {
           `,
     });
 
-    let result = await run(['.', '--format', './legacy-formatter.js']);
+    let result = await runBin('.', '--format', './legacy-formatter.js');
 
     expect(result.stdout).toMatchInlineSnapshot(`
       "errors: 3

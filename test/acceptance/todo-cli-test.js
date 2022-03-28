@@ -3,7 +3,6 @@ import { todoStorageFileExists, writeTodos, readTodoData } from '@lint-todo/util
 import { differenceInDays, subDays } from 'date-fns';
 
 import { setupProject, teardownProject, runBin } from '../helpers/bin-tester.js';
-import run from '../helpers/run.js';
 import setupEnvVar from '../helpers/setup-env-var.js';
 
 jest.setTimeout(10_000);
@@ -1209,8 +1208,13 @@ describe('todo usage', () => {
             error: 10,
           });
 
-          let result = await run(
-            ['.', '--update-todo', '--todo-days-to-warn', '10', '--todo-days-to-error', '20'],
+          let result = await runBin(
+            '.',
+            '--update-todo',
+            '--todo-days-to-warn',
+            '10',
+            '--todo-days-to-error',
+            '20',
             {
               env: {
                 TODO_DAYS_TO_WARN: 7,
